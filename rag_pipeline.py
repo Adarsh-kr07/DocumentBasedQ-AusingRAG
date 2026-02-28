@@ -29,11 +29,21 @@ def build_vector_db(chunks):
 
     return embed_model, index
 
-
 def retrieve_chunks(question, chunks, embed_model, index, top_k=TOP_K):
-    q_emb = embed_model.encode([question]).astype('float32')
-    D, I = index.search(q_emb, top_k)
-    return [chunks[i] for i in I[0]]
+    # Embed the question
+    q_vector = embed_model.encode([question])
+
+    # FAISS search
+    D, I = index.search(q_vector, top_k)
+
+    # Safely retrieve chunks
+    retrieved = []
+    if len(I) > 0 and len(chunks) > 0:
+        for i in I[0]:
+            if i < len(chunks) and i != -1:  # ignore invalid indices
+                retrieved.append(chunks[i])
+
+    return retrieved
 
 
 def answer_ollama(context_chunks, question):
