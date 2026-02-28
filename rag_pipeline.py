@@ -40,7 +40,7 @@ def retrieve_chunks(question, chunks, embed_model, index, top_k=TOP_K):
     retrieved = []
     if len(I) > 0 and len(chunks) > 0:
         for i in I[0]:
-            if i < len(chunks) and i != -1:  # ignore invalid indices
+            if i < len(chunks) and i != -1:  
                 retrieved.append(chunks[i])
 
     return retrieved
